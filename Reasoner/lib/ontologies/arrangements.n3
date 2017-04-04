@@ -1,0 +1,205 @@
+@prefix case: <http://matus.tomlein.org/case#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+
+{
+  ?arrangementNode a case:ArrangementNode;
+    case:device ?device.
+} => {
+  ?arrangementNode case:target ?device.
+}.
+
+{
+  ?arrangementNode a case:ArrangementNode;
+    case:resource ?resource.
+} => {
+  ?arrangementNode case:target ?resource.
+}.
+
+{
+  ?arrangementNode a case:ArrangementNode;
+    case:location ?location.
+} => {
+  ?arrangementNode case:target ?location.
+}.
+
+{
+  ?arrangementNode a case:ArrangementNode;
+    case:join ?join.
+} => {
+  ?arrangementNode case:target ?join.
+}.
+
+{
+  ?arrangementNode a case:ArrangementNode;
+    case:arrangement ?arrangement.
+} => {
+  ?arrangementNode case:target ?arrangement.
+}.
+
+{
+  ?arrangementNode a case:ArrangementNode;
+    case:externalSystem ?external.
+} => {
+  ?arrangementNode case:target ?external.
+}.
+
+case:flowLocationType a case:LocationType;
+  case:name "Flow".
+
+{
+  ?flow case:flowLocation ?flowLocation.
+} => {
+  [ a case:Placement;
+    case:of [ a case:ArrangementNode;
+      case:arrangement ?flow ];
+    case:in ?flowLocation ].
+}.
+
+# if both the from and to targets of a flow are placed in a location, place the
+# flow in the location
+{
+  ?flow a case:Arrangement;
+    case:kind "flow";
+    case:flowLocation ?flowLocation;
+    case:from [ case:target ?from ];
+    case:to [ case:target ?to ].
+
+  [ a case:Placement;
+    case:of [ case:target ?from ];
+    case:in ?location ].
+
+  [ a case:Placement;
+    case:of [ case:target ?to ];
+    case:in ?location ].
+} => {
+  [ a case:Placement;
+    case:of [ a case:ArrangementNode;
+      case:location ?flowLocation ];
+    case:in ?location ].
+}.
+
+# if a device is placed in a location and in a flow, place the flow in the
+# location
+{
+  [
+    a case:Placement;
+    case:in ?location1;
+    case:of [ a case:ArrangementNode; case:target ?device ]
+  ].
+
+  [
+    a case:Placement;
+    case:in ?location2;
+    case:of [ a case:ArrangementNode; case:target ?device ]
+  ].
+
+  ?location1 case:locationType case:flowLocationType;
+    log:notEqualTo ?location2.
+} => {
+  [
+    a case:Placement;
+    case:in ?location2;
+    case:of [ a case:ArrangementNode; case:location ?location1 ]
+  ].
+}.
+
+# if a device is placed in a flow and the flow is placed in a location,
+# place the device in the location
+{
+  [
+    a case:Placement;
+    case:in ?location;
+    case:of [ a case:ArrangementNode; case:target ?flowLocation ]
+  ].
+
+  [ a case:Placement;
+    case:of [ a case:ArrangementNode; case:device ?device ];
+    case:in ?flowLocation ].
+
+  ?flowLocation case:locationType case:flowLocationType;
+    log:notEqualTo ?location.
+} => {
+  [
+    a case:Placement;
+    case:in ?location;
+    case:ignore true;
+    case:of [ a case:ArrangementNode; case:device ?device ]
+  ].
+}.
+
+# Link placements with locations
+{
+  ?placement a case:Placement;
+    case:in ?location.
+} => {
+  ?location case:placement ?placement.
+}.
+
+# For flows going into a water tank, generate individual flows for placed
+# devices
+{
+  ?flow a case:Arrangement;
+    case:arrangementType ?arrangementType;
+    case:kind "flow";
+    case:from ?fromNode;
+    case:to [ case:location ?location ].
+
+  [ a case:Placement;
+    case:of ?placedNode;
+    case:in ?location ].
+} => {
+  [ a case:Arrangement;
+    case:ignore true;
+    case:arrangementType ?arrangementType;
+    case:kind "flow";
+    case:from ?fromNode;
+    case:to ?placedNode ].
+}.
+
+{
+  ?flow a case:Arrangement;
+    case:arrangementType ?arrangementType;
+    case:kind "flow";
+    case:from [ case:location ?location ];
+    case:to ?toNode.
+
+  [ a case:Placement;
+    case:of ?placedNode;
+    case:in ?location ].
+} => {
+  [ a case:Arrangement;
+    case:ignore true;
+    case:arrangementType ?arrangementType;
+    case:kind "flow";
+    case:from ?placedNode;
+    case:to ?toNode ].
+}.
+
+# For A -> B -> C, generate flow A -> C
+{
+  [ a case:Arrangement;
+    case:arrangementType ?arrangementType;
+    case:kind "flow";
+    case:from ?fromA;
+    case:to ?toA ].
+
+  ?toA case:target ?a;
+   case:blank false.
+
+  [ a case:Arrangement;
+    case:arrangementType ?arrangementType;
+    case:kind "flow";
+    case:from [ case:target ?a ];
+    case:to ?toB ].
+
+  ?toB case:target ?b.
+
+  ?a log:notEqualTo ?b.
+} => {
+  [ a case:Arrangement;
+    case:ignore true;
+    case:arrangementType ?arrangementType;
+    case:kind "flow";
+    case:from ?fromA;
+    case:to ?toB ].
+}.

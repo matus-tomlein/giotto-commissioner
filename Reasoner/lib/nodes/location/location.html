@@ -1,0 +1,82 @@
+<script type="text/javascript">
+  RED.nodes.registerType('Location', {
+    category: 'filters',
+    color: '#FDD0A2',
+    icon: 'hash.png',
+    defaults: {
+      variable: { value: '', required: true },
+      locationType: { value: '', required: true }
+    },
+    inputs: 1,
+    outputs: 2,
+
+    oneditprepare: function () {
+      var node = this;
+
+      $('#node-input-locationType').html(
+        findVariables('Location type').map(function (variable) {
+          return '<option>' + variable + '</option>';
+        }).join('')
+      );
+
+      $('#node-input-locationType').val(node.locationType);
+    },
+
+    info: function () {
+      if (this.variable) {
+        return 'This node defines a location - **' + this.variable + '** - with type ' +
+          this.locationType + '.';
+      }
+      return '';
+    },
+
+    label: function() {
+      if (this.variable) {
+        return this.variable;
+      }
+      return 'Location';
+    }
+  });
+
+  function findVariables(nodeType) {
+    return RED.nodes.filterNodes({})
+      .filter(function (node) { return node.variable && node.type == nodeType; })
+      .map(function (node) { return node.variable; })
+      .filter(function (value, index, self) {
+        return self.indexOf(value) === index;
+      });
+  }
+</script>
+
+<script type="text/x-red" data-template-name="Location">
+  <div class="form-row">
+    <label for="node-input-variable"><i class="fa fa-tag"></i>
+      <span>Label</span>
+    </label>
+
+    <input type="text" id="node-input-variable">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-locationType"><i class="fa fa-tag"></i>
+      <span>Type</span>
+    </label>
+
+    <select id="node-input-locationType">
+    </select>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="Location">
+  <h1>Require a location</h1>
+  <p>
+    This filter requires a location with the given type.
+    The location can be referenced in layouts to define device placements.
+  </p>
+  <p>
+    Locations are useful to filter devices according to their placement.
+    By defining a "Circuit" location and a layout filter with the placement of a
+    temperature and pressure sensor, one can filter the available sensors to
+    find only ones that are co-located in the same circuit.
+  </p>
+</script>

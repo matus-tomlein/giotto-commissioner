@@ -1,0 +1,14 @@
+@prefix case: <http://matus.tomlein.org/case#> .
+
+{
+  ?dp a case:DeploymentPlan;
+    case:application ?app.
+
+  ?appExecution a case:ApplicationExecution;
+    case:application ?app.
+
+  ?recommendation case:deploymentPlan ?dp.
+} => {
+  ?recommendation case:ignore true.
+  ?dp case:ignore true.
+}.

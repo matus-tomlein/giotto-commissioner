@@ -1,0 +1,154 @@
+{
+ "nodes": {
+  "node-red": {
+   "name": "node-red",
+   "version": "1.0.0",
+   "nodes": {
+    "add-ontology": {
+     "name": "add-ontology",
+     "types": [
+      "Ontology"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/add-ontology/add-ontology.js"
+    },
+    "call-function": {
+     "name": "call-function",
+     "types": [
+      "Call function"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/call-function/call-function.js"
+    },
+    "comment": {
+     "name": "comment",
+     "types": [
+      "comment"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/comment/90-comment.js"
+    },
+    "definition": {
+     "name": "definition",
+     "types": [
+      "Definition"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/definition/definition.js"
+    },
+    "device": {
+     "name": "device",
+     "types": [
+      "Device"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/device/device.js"
+    },
+    "function": {
+     "name": "function",
+     "types": [
+      "Function"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/function/function.js"
+    },
+    "installation-changed": {
+     "name": "installation-changed",
+     "types": [
+      "Start"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/installation-changed/installation-changed.js"
+    },
+    "layout": {
+     "name": "layout",
+     "types": [
+      "Layout"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/layout/layout.js"
+    },
+    "location": {
+     "name": "location",
+     "types": [
+      "Location"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/location/location.js"
+    },
+    "require": {
+     "name": "require",
+     "types": [
+      "Require property"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/require/require.js"
+    },
+    "satisfy": {
+     "name": "satisfy",
+     "types": [
+      "Satisfy property"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/satisfy/satisfy.js"
+    },
+    "recommend": {
+     "name": "recommend",
+     "types": [
+      "recommend"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/recommend/recommend.js"
+    },
+    "service": {
+     "name": "service",
+     "types": [
+      "service"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/service/service.js"
+    },
+    "rule": {
+     "name": "rule",
+     "types": [
+      "rule"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/rule/rule.js"
+    },
+    "application": {
+     "name": "application",
+     "types": [
+      "application"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/application/application.js"
+    },
+    "virtual-sensor": {
+     "name": "virtual-sensor",
+     "types": [
+      "virtual-sensor"
+     ],
+     "enabled": true,
+     "module": "node-red",
+     "file": "/Users/matus/Projects/PhD/iot-commissioner/Reasoner/lib/nodes/virtual-sensor/virtual-sensor.js"
+    }
+   }
+  }
+ }
+}

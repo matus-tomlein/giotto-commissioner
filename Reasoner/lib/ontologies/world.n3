@@ -1,0 +1,10 @@
+@prefix case: <http://matus.tomlein.org/case#> .
+
+case:thisWorld a case:World;
+  case:ignore true.
+
+{ ?item a case:Device. } => { case:thisWorld case:contains ?item. }.
+{ ?item a case:Resource. } => { case:thisWorld case:contains ?item. }.
+{ ?item a case:Location. } => { case:thisWorld case:contains ?item. }.
+{ ?item a case:Placement. } => { case:thisWorld case:contains ?item. }.
+{ ?item a case:Arrangement. } => { case:thisWorld case:contains ?item. }.

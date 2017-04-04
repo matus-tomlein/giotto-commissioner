@@ -1,0 +1,78 @@
+<script type="text/javascript">
+  RED.nodes.registerType('service', {
+    category: 'filters',
+    icon: 'puzzle.png',
+    color: '#E6E0F8',
+    paletteLabel: 'Service',
+    defaults: {
+      data: { value: '' },
+      jsonData: { value: '' },
+      variables: { value: '' }
+    },
+    oneditprepare: function () {
+      var that = this;
+
+      $('#frame').on('load', function () {
+        var api = $('#frame')[0].contentWindow.api()
+          .initialize('services', that.data, RED);
+      });
+    },
+
+    oneditsave: function() {
+      var values = $('#frame')[0].contentWindow.api().save('services');
+      for (key in values) {
+        this[key] = values[key];
+      }
+    },
+
+    info: function () {
+      var content = [];
+
+      if (this.jsonData) {
+        var data = JSON.parse(this.jsonData);
+        var services = data.services.map(function (service) {
+          return service.variable;
+        });
+
+        if (services.length)
+          content.push('## Required services\n\n- ' + services.join('\n- '));
+      }
+
+      return content.join('\n\n');
+    },
+
+    oneditresize: function(size) {
+      var height = size.height - $('.inputs').height();
+      $('#frame').css('width', size.width + 'px');
+      $('#frame').css('height', height + 'px');
+    },
+    inputs: 1,
+    outputs: 2,
+    label: function () {
+      if (this.variables) {
+        var items = [];
+        var vars = JSON.parse(this.variables);
+        for (var i in vars.DataProvider) {
+          items.push(vars.DataProvider[i]);
+        }
+        for (var i in vars.DataConsumer) {
+          items.push(vars.DataConsumer[i]);
+        }
+        if (items.length)
+          return items.join(', ');
+      }
+      return 'Service';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="service">
+  <iframe id="frame" style="width: 600px; height: 500px;" src="/node.html" frameBorder="0"></iframe>
+</script>
+
+<script type="text/x-red" data-help-name="service">
+  <h1>Devices and resources</h1>
+  <p>
+    Require certain devices and resources to be present in the installation.
+  </p>
+</script>

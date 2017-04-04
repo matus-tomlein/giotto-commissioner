@@ -1,0 +1,94 @@
+<script type="text/javascript">
+  RED.nodes.registerType('Layout', {
+    category: 'filters',
+    icon: 'serial.png',
+    color: '#C7E9C0',
+    defaults: {
+      variable: { value: '', required: true },
+      data: { value: '' },
+      jsonData: { value: '' }
+    },
+    oneditprepare: function () {
+      var that = this;
+      $('#frame').on('load', function () {
+        var api = $('#frame')[0].contentWindow.api()
+          .initialize('layout', that.data, RED);
+      });
+    },
+
+    oneditsave: function () {
+      var values = $('#frame')[0].contentWindow.api().save('layout');
+      for (key in values) {
+        this[key] = values[key];
+      }
+    },
+
+    info: function () {
+      var content = [];
+
+      if (this.jsonData) {
+        content.push('## Name: ' + this.variable);
+
+        var data = JSON.parse(this.jsonData);
+        var locations = data.locations.map(function (location) {
+          var locationInfo = '- ' + location.name;
+          var devices = location.devices.map(function (device) {
+            return '  - With device: ' + device;
+          });
+          var resources = location.resources.map(function (resource) {
+            return '  - With resource: ' + resource;
+          });
+          if (devices.length) locationInfo += '\n' + devices.join('\n');
+          if (resources.length) locationInfo += '\n' + resources.join('\n');
+
+          return locationInfo;
+        });
+        var flows = data.flows.map(function (flow) {
+          var flowInfo = '- Flow with type **' + flow.type + '**\n';
+
+          return flowInfo;
+        });
+
+        if (locations.length)
+          content.push('## Locations\n\n' + locations.join('\n'));
+        if (flows.length)
+          content.push('## Flows\n\n' + flows.join('\n'));
+      }
+
+      return content.join('\n\n');
+    },
+
+    oneditresize: function(size) {
+      var height = size.height - $('.inputs').height();
+      $('#frame').css('width', size.width + 'px');
+      $('#frame').css('height', height + 'px');
+    },
+
+    inputs: 1,
+    outputs: 2,
+    label: function () {
+      return this.variable || 'Layout';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="Layout">
+  <div class="inputs">
+     <div class="form-row">
+       <label for="node-input-variable"><i class="fa fa-tag"></i><span>Title</span></label>
+       <input type="text" id="node-input-variable">
+     </div>
+  </div>
+
+  <iframe id="frame" style="width: 600px; height: 500px;" src="/node.html" frameBorder="0"></iframe>
+</script>
+
+<script type="text/x-red" data-help-name="Layout">
+  <h1>Require a layout of the installation</h1>
+  <p>
+    This filter specifies the required physical layout of devices and resources
+    in the installation.
+    A layout is defined using device placements and flows
+    between devices.
+  </p>
+</script>

@@ -1,0 +1,170 @@
+<script type="text/javascript">
+  RED.nodes.registerType('Call function', {
+    category: 'functions',
+    icon: 'function.png',
+    color: '#DAC4B4',
+
+    defaults: {
+      functionVariable: { value: '', required: true },
+      attributes: { value: '' }
+    },
+
+    oneditprepare: function () {
+      var that = this;
+      $('#node-input-attributes').val(this.attributes);
+
+      $.getScript('/scripts/helpers.js', function () {
+        $('#node-input-functionVariable').html(
+          findVariables('Function').map(function (variable) {
+            return '<option>' + variable + '</option>';
+          }).join('')
+        );
+        $('#node-input-functionVariable').val(that.functionVariable);
+        updateFunctionArguments();
+        $('#node-input-functionVariable').change(updateFunctionArguments);
+      });
+    },
+
+    oneditsave: function() {
+      var values = {Resource: {}, Device: {}, Location: {}};
+      $('.Resource').toArray().map(function (resource) {
+        resource = $(resource);
+        values.Resource[resource.attr('data-id')] = resource.val();
+      });
+      $('.Device').toArray().map(function (device) {
+        device = $(device);
+        values.Device[device.attr('data-id')] = device.val();
+      });
+      $('.Location').toArray().map(function (location) {
+        location = $(location);
+        values.Location[location.attr('data-id')] = location.val();
+      });
+
+      $('#node-input-attributes').val(JSON.stringify(values));
+    },
+
+    info: function () {
+      var content = [];
+      if (this.functionVariable) {
+        content.push('Function: **' + this.functionVariable + '**.');
+      }
+
+      var attributes = [];
+      if (this.attributes) {
+        var data = JSON.parse(this.attributes);
+        for (var key in data.Device) {
+          attributes.push('- Device: ' + data.Device[key]);
+        }
+        for (var key in data.Resource) {
+          attributes.push('- Resource: ' + data.Resource[key]);
+        }
+        for (var key in data.Location) {
+          attributes.push('- Location: ' + data.Location[key]);
+        }
+
+        if (attributes.length) {
+          content.push('With attributes:\n\n' + attributes.join('\n'));
+        }
+      }
+
+      return content.join('\n\n');
+    },
+
+    inputs: 1,
+    outputs: 1,
+    label: function () {
+      if (this.attributes) {
+        var initializedWith = [];
+
+        var data = JSON.parse(this.attributes);
+        for (var key in data.Device) {
+          initializedWith.push(key + ': ' + data.Device[key]);
+        }
+        for (var key in data.Resource) {
+          initializedWith.push(key + ': ' + data.Resource[key]);
+        }
+        for (var key in data.Location) {
+          initializedWith.push(key + ': ' + data.Location[key]);
+        }
+
+        if (initializedWith.length) {
+          return this.functionVariable + ' (' + initializedWith.join(', ') + ')';
+        }
+      }
+
+      return this.functionVariable || 'Call function';
+    }
+  });
+
+  function updateFunctionArguments() {
+    var functionVariable = $('#node-input-functionVariable').val();
+
+    if (functionVariable) {
+      var functionNodes = RED.nodes.filterNodes({})
+        .filter(function (node) { return node.variable == functionVariable; });
+
+      if (functionNodes) {
+        var functionNode = functionNodes[0];
+        var attributes = JSON.parse(functionNode.variables);
+
+        $('#device-inputs').html(
+          attributes.Device.map(function (device) {
+            return createInput(device, 'Device');
+          }).join('')
+        );
+
+        $('#resource-inputs').html(
+          attributes.Resource.map(function (resource) {
+            return createInput(resource, 'Resource');
+          }).join('')
+        );
+
+        $('#location-inputs').html(
+          attributes.Location.map(function (location) {
+            return createInput(location, 'Location');
+          }).join('')
+        );
+      }
+    }
+
+    var attributes = $('#node-input-attributes').val()
+    if (attributes) {
+      attributes = JSON.parse(attributes);
+      [ attributes.Device,
+        attributes.Resource,
+        attributes.Location ].map(function (values) {
+          for (var id in values) {
+            var value = values[id];
+            $('#' + variableToId(id)).val(value);
+          }
+      });
+    }
+  }
+</script>
+
+<script type="text/x-red" data-template-name="Call function">
+  <input type="text" id="node-input-attributes" style="display: none">
+
+  <div class="form-row">
+    <label for="node-input-functionVariable"><i class="fa fa-tag"></i> <span>Function</span></label>
+    <select id="node-input-functionVariable">
+    </select>
+  </div>
+
+  <div id="device-inputs"></div>
+  <div id="resource-inputs"></div>
+  <div id="location-inputs"></div>
+</script>
+
+<script type="text/x-red" data-help-name="Call function">
+  <h1>Call function</h1>
+  <p>
+    This node calls the referenced function.
+    The function is executed in the current step and the flow is resumed after
+    the end of the function.
+  </p>
+  <p>
+    The goal of functions is to enable the reuse of parts of the configuration
+    in multiple places.
+  </p>
+</script>

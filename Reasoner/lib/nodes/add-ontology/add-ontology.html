@@ -1,0 +1,41 @@
+<script type="text/javascript">
+  RED.nodes.registerType('Ontology', {
+    category: 'definitions',
+    color: '#FFAAAA',
+    icon: 'file.png',
+    defaults: {
+      content: { value: '', required: true },
+      label: { value: '' }
+    },
+    inputs: 0,
+    outputs: 0,
+    label: function() {
+      return this.label || 'Ontology';
+    },
+    oneditresize: function(size) {
+      var height = size.height - $('.inputs').height();
+      $('#node-input-content').css('height', height + 'px');
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="Ontology">
+  <div class="inputs">
+    <div class="form-row">
+      <label for="node-input-label"><i class="fa fa-tag"></i> <span>Label</span></label>
+      <input type="text" id="node-input-label">
+    </div>
+
+    <div class="form-row" style="width: 100%">
+      <label for="node-input-content"><i class="fa fa-tag"></i>
+        <span>URI or definition</span>
+      </label>
+    </div>
+  </div>
+
+  <textarea rows="10" cols="50" id="node-input-content" style="width: 100%;">
+  </textarea>
+</script>
+
+<script type="text/x-red" data-help-name="Ontology">
+</script>

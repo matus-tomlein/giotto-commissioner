@@ -1,0 +1,19 @@
+{
+  "name": "iot-commissioner-location",
+  "version": "1.0.0",
+  "description": "SenseTag connector for GIoTTO middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matus Tomlein",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.1.2",
+    "express": "^4.14.0",
+    "n3": "^0.8.1",
+    "request": "^2.78.0",
+    "sensortag": "^1.2.3",
+    "valid-url": "^1.0.9"
+  }
+}

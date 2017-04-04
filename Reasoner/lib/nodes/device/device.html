@@ -1,0 +1,82 @@
+<script type="text/javascript">
+  RED.nodes.registerType('Device', {
+    category: 'filters',
+    icon: 'light.png',
+    color: '#a6bbcf',
+    defaults: {
+      data: { value: '' },
+      jsonData: { value: '' },
+      variables: { value: '' }
+    },
+    oneditprepare: function () {
+      var that = this;
+
+      $('#frame').on('load', function () {
+        var api = $('#frame')[0].contentWindow.api()
+          .initialize('devices', that.data, RED);
+      });
+    },
+
+    oneditsave: function() {
+      var values = $('#frame')[0].contentWindow.api().save('devices');
+      for (key in values) {
+        this[key] = values[key];
+      }
+    },
+
+    info: function () {
+      var content = [];
+
+      if (this.jsonData) {
+        var data = JSON.parse(this.jsonData);
+        var resources = data.resources.map(function (resource) {
+          return resource.variable;
+        });
+        var devices = data.devices.map(function (device) {
+          return device.variable;
+        });
+
+        if (devices.length)
+          content.push('## Required devices\n\n- ' + devices.join('\n- '));
+        if (resources.length)
+          content.push('## Required resources\n\n- ' + resources.join('\n- '));
+      }
+
+      return content.join('\n\n');
+    },
+
+    oneditresize: function(size) {
+      var height = size.height - $('.inputs').height();
+      $('#frame').css('width', size.width + 'px');
+      $('#frame').css('height', height + 'px');
+    },
+    inputs: 1,
+    outputs: 2,
+    label: function () {
+      if (this.variables) {
+        var items = [];
+        var vars = JSON.parse(this.variables);
+        for (var i in vars.Device) {
+          items.push(vars.Device[i]);
+        }
+        for (var i in vars.Resource) {
+          items.push(vars.Resource[i]);
+        }
+        if (items.length)
+          return items.join(', ');
+      }
+      return 'Devices';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="Device">
+  <iframe id="frame" style="width: 600px; height: 500px;" src="/node.html" frameBorder="0"></iframe>
+</script>
+
+<script type="text/x-red" data-help-name="Device">
+  <h1>Devices and resources</h1>
+  <p>
+    Require certain devices and resources to be present in the installation.
+  </p>
+</script>

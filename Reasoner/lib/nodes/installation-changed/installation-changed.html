@@ -1,0 +1,64 @@
+<script type="text/javascript">
+  RED.nodes.registerType('Start', {
+    category: 'control',
+    icon: 'arrow-in.png',
+    color: '#E2D96E',
+    defaults: {
+      disabled: { value: '', default: false },
+      suggestPotentialPlacements: { value: true },
+      suggestPotentialRelations: { value: true },
+      suggestPotentialResources: { value: true },
+      suggestPotentialDeviceRoles: { value: true }
+    },
+    inputs: 0,
+    outputs: 1,
+    label: function () {
+      if (this.disabled == true)
+        return 'Ignore';
+      return 'Start';
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="Start">
+  <div class="form-row">
+    <label for="node-input-disabled"><i class="fa fa-tag"></i> <span>Disabled</span></label>
+    <input type="checkbox" id="node-input-disabled">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-suggestPotentialPlacements"><i class="fa fa-tag"></i>
+    <span>Suggest potential placements</span></label>
+    <input type="checkbox" id="node-input-suggestPotentialPlacements">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-suggestPotentialRelations"><i class="fa fa-tag"></i>
+    <span>Suggest potential relations</span></label>
+    <input type="checkbox" id="node-input-suggestPotentialRelations">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-suggestPotentialResources"><i class="fa fa-tag"></i>
+    <span>Suggest potential resources</span></label>
+    <input type="checkbox" id="node-input-suggestPotentialResources">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-suggestPotentialDeviceRoles">
+    <i class="fa fa-tag"></i> <span>Suggest potential device roles</span></label>
+    <input type="checkbox" id="node-input-suggestPotentialDeviceRoles">
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="Start">
+  <h1>Start the definition</h1>
+  <p>
+    This node is the first node in a chain of nodes that define a configuration.
+    It is followed by filter nodes to filter the installation properties.
+  </p>
+  <p>
+    A chain of nodes, a flow, can lead to an installation of a application using
+    the "Install application" node.
+  </p>
+</script>

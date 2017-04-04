@@ -1,0 +1,44 @@
+@prefix case: <http://matus.tomlein.org/case#> .
+
+{
+  ?rule a case:Rule;
+    case:property ?property.
+} => {
+  ?property case:rule ?rule.
+}.
+
+{
+  ?property a case:Property;
+    case:propertyType ?propertyType.
+} => {
+  ?propertyType case:property ?property.
+}.
+
+{
+  ?property a case:Property;
+    case:ancestor ?ancestor.
+
+  ?rule a case:Rule;
+    case:property ?property.
+} => {
+  ?rule case:property ?ancestor.
+}.
+
+{
+  ?property a case:Property;
+    case:ancestor ?ancestor.
+
+  ?ancestor case:ancestor ?preancestor.
+} => {
+  ?property case:ancestor ?preancestor.
+}.
+
+{
+  ?virtualSensor a case:VirtualSensor;
+    case:name ?name.
+
+  ?requiredVirtualSensor a case:RequiredVirtualSensor;
+    case:name ?name.
+} => {
+  ?requiredVirtualSensor case:ignore true.
+}.

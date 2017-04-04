@@ -1,0 +1,96 @@
+<script type="text/javascript">
+  RED.nodes.registerType('recommend', {
+    category: 'control',
+    color: '#D8BFD8',
+    icon: 'thumbsup.png',
+    paletteLabel: 'Recommend',
+    defaults: {
+      data: { value: '' },
+      jsonData: { value: '' },
+      assigned: { value: '' }
+    },
+    inputs: 1,
+    outputs: 0,
+
+    oneditprepare: function () {
+      var that = this;
+      $('#frame').on('load', function () {
+        var api = $('#frame')[0].contentWindow.api()
+          .initialize('recommend', that.data, RED);
+      });
+    },
+
+    oneditsave: function() {
+      var values = $('#frame')[0].contentWindow.api().save('recommend');
+      for (key in values) {
+        this[key] = values[key];
+      }
+    },
+
+    oneditresize: function(size) {
+      var height = size.height - $('.inputs').height();
+      $('#frame').css('width', size.width + 'px');
+      $('#frame').css('height', height + 'px');
+    },
+
+    info: function () {
+      var content = [];
+
+      if (this.jsonData) {
+        var data = JSON.parse(this.jsonData);
+        var properties = data.properties.map(function (property) {
+          var info = '- ' + property.title + '\n';
+
+          return info;
+        });
+        if (properties.length) content.push('## Recommend properties\n\n' + properties.join('\n'));
+      }
+
+      return content.join('\n\n');
+    },
+
+    label: function() {
+      if (this.jsonData) {
+        var data = JSON.parse(this.jsonData);
+
+        var propertyCounts = {};
+        data.properties.map(function (property) {
+          if (propertyCounts[property.title]) propertyCounts[property.title]++;
+          else propertyCounts[property.title] = 1;
+        });
+
+        var propertyLabels = [];
+        for (var title in propertyCounts) {
+          if (propertyCounts[title] == 1)
+            propertyLabels.push(title);
+          else
+            propertyLabels.push(title + ' x ' + propertyCounts[title]);
+        }
+
+        return 'Recommend: ' + propertyLabels.join(', ');
+      }
+      return 'Recomend';
+    }
+
+  });
+
+</script>
+
+<script type="text/x-red" data-template-name="recommend">
+  <iframe id="frame" style="width: 600px; height: 500px;" src="/node.html" frameBorder="0"></iframe>
+</script>
+
+<script type="text/x-red" data-help-name="recommend">
+  <h1>Recommend a property</h1>
+  <p>This node satisfies the referenced requirement.</p>
+  <p>
+    Requirements are defined along with applications.
+    Applications can define requirements such as "need a pressure sensor", which
+    are satisfied in using this node
+    along with the required device, location or other property.
+  </p>
+  <p>
+    The satisfied requirements are passed as parameters to applications when
+    they are installed/initialized.
+  </p>
+</script>
